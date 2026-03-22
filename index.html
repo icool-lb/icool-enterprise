@@ -3,284 +3,182 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>iCOOL Enterprise PWA Full</title>
+  <title>iCOOL ERP Final</title>
   <meta name="theme-color" content="#1173d8" />
   <link rel="manifest" href="./manifest.webmanifest">
   <style>
-    :root{--bg:#f4f6f9;--panel:#fff;--line:#e2e8f0;--text:#1f2d3d;--muted:#6b7a8c;--blue:#1173d8;--blue-dark:#0b5ab0;--soft:#fafcfe;--red:#dc2626;--green:#16a34a}
+    :root{--bg:#f4f6f9;--line:#e2e8f0;--text:#1f2d3d;--muted:#6b7a8c;--blue:#1173d8;--blue2:#0b5ab0;--soft:#fafcfe;--red:#dc2626;--green:#16a34a;--orange:#d97706}
     *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
-    .app{max-width:430px;margin:auto;min-height:100vh;background:var(--bg);padding-bottom:20px}
-    .header{background:#fff;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10}
-    .brand{font-size:22px;font-weight:900;color:var(--blue)} .sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5}
-    .statusbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-    .pill{font-size:11px;padding:5px 8px;border-radius:999px;background:#eef5ff;color:var(--blue);border:1px solid #d6e6f7}
-    .pill.ok{background:#ecfdf3;color:#0f7a37;border-color:#bbf7d0}
-    .pill.warn{background:#fff7ed;color:#b45309;border-color:#fed7aa}
-    .pill.bad{background:#fff1f2;color:#b91c1c;border-color:#fecdd3}
-    .tabs-wrap{position:sticky;top:88px;z-index:9;background:var(--bg);padding:10px 16px 8px;border-bottom:1px solid #e7edf3}
-    .tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;background:#fff;padding:8px;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 10px rgba(0,0,0,.03)}
-    .tabs button{text-align:center;padding:10px 4px;border-radius:10px;font-size:11px;color:#667;cursor:pointer;font-weight:700;border:none;background:none;font-family:inherit}
-    .tabs button.active{color:var(--blue);font-weight:800;background:#f4f9ff}
-    .icon{display:block;font-size:18px;margin-bottom:4px} .container{padding:16px}
-    .hero{background:linear-gradient(135deg,var(--blue),var(--blue-dark));color:#fff;border-radius:16px;padding:16px;margin-bottom:14px}
-    .hero h2{margin:0 0 8px;font-size:20px} .hero p{margin:0;font-size:13px;line-height:1.6}
-    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
-    .title{font-size:16px;font-weight:800;margin-bottom:10px} .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .stat{background:#fff;padding:14px;border-radius:14px;border:1px solid var(--line);text-align:center}
-    .stat .k{font-size:12px;color:var(--muted)} .stat b{display:block;margin-top:6px;font-size:20px}
-    .label{font-size:12px;color:var(--muted);font-weight:800;margin:8px 2px 6px}
-    .input{min-height:48px;border:1px solid #dfe7ef;border-radius:10px;margin-bottom:10px;padding:10px 12px;display:flex;align-items:center;background:var(--soft)}
-    .input input,.input select,.input textarea{border:none;outline:none;width:100%;background:transparent;font-size:14px;font-family:inherit;color:var(--text)}
-    .input textarea{min-height:72px;resize:vertical}
-    .btn{height:46px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-weight:800;width:100%;cursor:pointer;font-family:inherit}
-    .btn.secondary{background:#eef5ff;color:var(--blue);border:1px solid #cfe0f5} .btn.danger{background:#fff1f2;color:var(--red);border:1px solid #fecdd3}
-    .btn.green{background:#ecfdf3;color:#0f7a37;border:1px solid #bbf7d0}
-    .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px} .toolbar3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .note{font-size:12px;color:var(--muted);line-height:1.6}
-    .screen{display:none} .screen.active{display:block} .list{display:flex;flex-direction:column;gap:8px}
-    .item{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff} .item .top{display:flex;justify-content:space-between;gap:8px}
-    .name{font-size:14px;font-weight:800} .small{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
-    .pill2{font-size:11px;padding:4px 8px;border-radius:999px;background:#eef5ff;color:var(--blue);border:1px solid #d6e6f7;white-space:nowrap}
-    .empty{padding:18px;text-align:center;font-size:13px;color:var(--muted);border:1px dashed var(--line);border-radius:12px;background:#fff}
-    table{width:100%;border-collapse:collapse;font-size:12px} th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:right;vertical-align:top}
-    th{color:#516273;background:#f8fbfe} .section-title{font-size:14px;font-weight:800;margin:6px 0 10px}
-    .hidden{display:none!important} .login-box{max-width:390px;margin:24px auto} .role-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
-    .role-tab{height:46px;border:none;border-radius:10px;background:#eef5ff;color:var(--blue);font-weight:800;cursor:pointer}
-    .role-tab.active{background:var(--blue);color:#fff}
-    .report-box{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
-    .report-head{border-bottom:2px solid var(--line);padding-bottom:10px;margin-bottom:12px}
-    .report-head h3{margin:0 0 6px;font-size:16px}
-    .report-meta{font-size:12px;color:var(--muted);line-height:1.7}
+    .app{max-width:430px;margin:auto;min-height:100vh;padding-bottom:24px}.header{background:#fff;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+    .brand{font-size:22px;font-weight:900;color:var(--blue)} .sub{font-size:12px;color:var(--muted);margin-top:4px}
+    .statusbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{font-size:11px;padding:5px 8px;border-radius:999px;background:#eef5ff;color:var(--blue);border:1px solid #d6e6f7}.ok{background:#ecfdf3!important;color:#0f7a37!important}.warn{background:#fff7ed!important;color:#b45309!important}.bad{background:#fff1f2!important;color:#b91c1c!important}
+    .tabs-wrap{position:sticky;top:86px;z-index:19;background:var(--bg);padding:10px 16px 8px}.tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;background:#fff;padding:8px;border:1px solid var(--line);border-radius:14px}
+    .tabs button{padding:9px 2px;border-radius:10px;font-size:10px;border:none;background:none;color:#667;font-weight:700}.tabs button.active{background:#f4f9ff;color:var(--blue)}
+    .container{padding:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}.title{font-size:16px;font-weight:800;margin-bottom:10px}
+    .label{font-size:12px;color:var(--muted);font-weight:800;margin:8px 2px 6px}.input{min-height:48px;border:1px solid #dfe7ef;border-radius:10px;margin-bottom:10px;padding:10px 12px;display:flex;align-items:center;background:var(--soft)}
+    .input input,.input select,.input textarea{border:none;outline:none;width:100%;background:transparent;font-size:14px;font-family:inherit;color:var(--text)} .input textarea{min-height:72px;resize:vertical}
+    .btn{height:46px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-weight:800;width:100%;cursor:pointer}.secondary{background:#eef5ff!important;color:var(--blue)!important;border:1px solid #cfe0f5}.green{background:#ecfdf3!important;color:#0f7a37!important;border:1px solid #bbf7d0}.danger{background:#fff1f2!important;color:#b91c1c!important;border:1px solid #fecdd3}
+    .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toolbar3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .screen{display:none}.screen.active{display:block}.hidden{display:none!important}.empty{padding:16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.name{font-size:14px;font-weight:800}.small{font-size:12px;color:var(--muted);margin-top:4px}
+    table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:right;vertical-align:top}th{background:#f8fbfe}.hero{background:linear-gradient(135deg,#1173d8,#0b5ab0);color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}.hero h2{margin:0 0 8px;font-size:20px}.hero p{margin:0;font-size:13px;line-height:1.6}
   </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="brand">iCOOL Enterprise PWA</div>
-    <div class="sub" id="headSub">Full build with Payroll + Time Sheet</div>
+    <div class="brand">iCOOL ERP Final</div>
+    <div class="sub">Payroll + TimeSheet + Settings + Better Pull</div>
     <div class="statusbar">
       <span class="pill" id="netStatus">Offline</span>
-      <span class="pill" id="swStatus">PWA</span>
       <span class="pill" id="queueStatus">Queue: 0</span>
-      <span class="pill" id="syncStatusMini">No sync</span>
+      <span class="pill" id="swStatus">PWA</span>
+      <span class="pill" id="syncMini">No sync</span>
     </div>
   </div>
-  <section id="screen-login" class="screen active">
-    <div class="container login-box">
-      <div class="hero"><h2>iCOOL PWA Full</h2><p>نسخة كاملة تتضمن Payroll و Time Sheet مع أوفلاين ومزامنة تلقائية.</p></div>
+
+  <section id="loginScreen" class="screen active">
+    <div class="container">
+      <div class="hero"><h2>النسخة النهائية</h2><p>تشمل الرواتب، التايم شيت، الإعدادات، إضافة مستخدم، تغيير باسورد، وأوفلاين مع مزامنة.</p></div>
       <div class="card">
-        <div class="title">تسجيل الدخول</div>
-        <div class="role-tabs">
-          <button class="role-tab active" data-role="admin" type="button">Admin</button>
-          <button class="role-tab" data-role="foreman" type="button">Foreman</button>
-        </div>
-        <div class="input"><input id="loginUser" value="admin" placeholder="اسم المستخدم"></div>
-        <div class="input"><input id="loginPass" type="password" value="1234" placeholder="كلمة المرور"></div>
-        <button class="btn" id="loginBtn" type="button">دخول</button>
+        <div class="label">اسم المستخدم</div><div class="input"><input id="loginUser" value="admin"></div>
+        <div class="label">الباسورد</div><div class="input"><input id="loginPass" type="password" value="1234"></div>
+        <button class="btn" id="loginBtn">دخول</button>
       </div>
     </div>
   </section>
+
   <div id="appShell" class="hidden">
     <div class="tabs-wrap">
       <div class="tabs">
-        <button class="active" data-screen="home"><span class="icon">⌂</span>الرئيسية</button>
-        <button data-screen="workers"><span class="icon">👷</span>العمال</button>
-        <button data-screen="materials"><span class="icon">📦</span>المواد</button>
-        <button data-screen="projects" class="admin-only"><span class="icon">🏗️</span>المشاريع</button>
-        <button data-screen="reports" class="admin-only"><span class="icon">📊</span>التقارير</button>
+        <button class="active" data-screen="home">الرئيسية</button>
+        <button data-screen="workers">العمال</button>
+        <button data-screen="materials">المواد</button>
+        <button data-screen="projects" class="admin-only">المشاريع</button>
+        <button data-screen="reports" class="admin-only">التقارير</button>
+        <button data-screen="payroll" class="admin-only">Payroll</button>
+        <button data-screen="settings" class="admin-only">الإعدادات</button>
       </div>
     </div>
 
-    <section id="screen-home" class="screen">
+    <section id="screen-home" class="screen active">
       <div class="container">
-        <div class="hero"><h2>النسخة الكاملة</h2><p id="homeIntro">الأدمن يرى المشاريع والتقارير والرواتب والتايم شيت والمزامنة. الفورمان يرى الإدخال فقط.</p></div>
-        <div class="grid">
-          <div class="stat"><div class="k">Projects</div><b id="statProjects">0</b></div>
-          <div class="stat"><div class="k">Workers</div><b id="statWorkers">0</b></div>
-          <div class="stat"><div class="k">Worker Entries</div><b id="statWorkerEntries">0</b></div>
-          <div class="stat"><div class="k">Material Entries</div><b id="statMaterialEntries">0</b></div>
-        </div>
+        <div class="hero"><h2>لوحة التحكم</h2><p id="sessionInfo">-</p></div>
         <div class="card admin-only">
-          <div class="title">المزامنة</div>
           <div class="label">رابط Google Apps Script Web App</div>
-          <div class="input"><input id="gasUrl" placeholder="ضع رابط Web App هنا"></div>
+          <div class="input"><input id="gasUrl" placeholder="ضع الرابط هنا"></div>
           <div class="toolbar3">
-            <button class="btn" id="saveGasUrlBtn" type="button">حفظ الرابط</button>
-            <button class="btn green" id="syncNowBtn" type="button">Sync Now</button>
-            <button class="btn secondary" id="pullNowBtn" type="button">Pull</button>
+            <button class="btn" id="saveUrlBtn">حفظ</button>
+            <button class="btn green" id="syncBtn">Sync</button>
+            <button class="btn secondary" id="pullBtn">Pull</button>
           </div>
-          <div class="note" id="syncStatus" style="margin-top:10px">جاهز</div>
+          <div class="small" id="syncStatus">جاهز</div>
         </div>
-        <div class="card">
-          <div class="title">الجلسة الحالية</div>
-          <div class="note" id="sessionInfo">-</div>
-          <div class="toolbar" style="margin-top:10px">
-            <button class="btn danger" id="logoutBtn" type="button">تسجيل خروج</button>
-            <button class="btn secondary" type="button" data-screen="workers">إدخال سريع</button>
-          </div>
-        </div>
+        <div class="card"><button class="btn danger" id="logoutBtn">تسجيل خروج</button></div>
       </div>
     </section>
 
-    <section id="screen-workers" class="screen">
-      <div class="container">
-        <div class="card">
-          <div class="title">إدخال العمال</div>
-          <div class="label">الرقم التسلسلي اليومي</div><div class="input"><input id="wSeq" readonly></div>
-          <div class="label">التاريخ</div><div class="input"><input id="wDate" type="date"></div>
-          <div class="label">الزبون</div><div class="input"><input id="wCustomer" list="customersList" placeholder="الزبون"></div>
-          <div class="label">المشروع</div><div class="input"><input id="wProject" list="projectsList" placeholder="المشروع"></div>
-          <div class="label">العامل</div><div class="input"><input id="wWorker" list="workersList" placeholder="العامل"></div>
-          <div class="label">وقت البدء</div><div class="input"><input id="wStart" type="time" value="08:00"></div>
-          <div class="label">وقت الانتهاء</div><div class="input"><input id="wEnd" type="time" value="17:00"></div>
-          <div class="label">وصف العمل</div><div class="input"><input id="wTask" list="tasksList" placeholder="وصف العمل"></div>
-          <div class="label">ملاحظة</div><div class="input"><textarea id="wNote" placeholder="ملاحظة"></textarea></div>
-          <div class="toolbar"><button class="btn" id="saveWorkerBtn" type="button">حفظ</button><button class="btn secondary" type="button" data-screen="home">رجوع</button></div>
-        </div>
-        <div class="card"><div class="title">آخر إدخالات العمال</div><div id="workerList" class="list"></div></div>
+    <section id="screen-workers" class="screen"><div class="container">
+      <div class="card">
+        <div class="title">إدخال العمال</div>
+        <div class="label">التاريخ</div><div class="input"><input id="wDate" type="date"></div>
+        <div class="label">الزبون</div><div class="input"><input id="wCustomer" list="customersList"></div>
+        <div class="label">المشروع</div><div class="input"><input id="wProject" list="projectsList"></div>
+        <div class="label">العامل</div><div class="input"><input id="wWorker" list="workersList"></div>
+        <div class="label">بدء</div><div class="input"><input id="wStart" type="time" value="08:00"></div>
+        <div class="label">انتهاء</div><div class="input"><input id="wEnd" type="time" value="17:00"></div>
+        <div class="label">وصف العمل</div><div class="input"><input id="wTask" list="tasksList"></div>
+        <button class="btn" id="saveWorkerBtn">حفظ</button>
       </div>
-    </section>
+      <div class="card"><div class="title">آخر إدخالات العمال</div><div id="workersBox" class="empty">لا يوجد</div></div>
+    </div></section>
 
-    <section id="screen-materials" class="screen">
-      <div class="container">
-        <div class="card">
-          <div class="title">إدخال المواد</div>
-          <div class="label">الرقم التسلسلي اليومي</div><div class="input"><input id="mSeq" readonly></div>
-          <div class="label">التاريخ</div><div class="input"><input id="mDate" type="date"></div>
-          <div class="label">الزبون</div><div class="input"><input id="mCustomer" list="customersList" placeholder="الزبون"></div>
-          <div class="label">المشروع</div><div class="input"><input id="mProject" list="projectsList" placeholder="المشروع"></div>
-          <div class="label">المادة</div><div class="input"><input id="mMaterial" list="materialsList" placeholder="المادة"></div>
-          <div class="label">الكمية</div><div class="input"><input id="mQty" type="number" step="0.01" placeholder="الكمية"></div>
-          <div class="label">السعر</div><div class="input"><input id="mPrice" type="number" step="0.01" placeholder="السعر"></div>
-          <div class="label">المورد</div><div class="input"><input id="mSupplier" list="suppliersList" placeholder="المورد"></div>
-          <div class="label">ملاحظة / رقم فاتورة</div><div class="input"><textarea id="mNote" placeholder="ملاحظة"></textarea></div>
-          <div class="toolbar"><button class="btn" id="saveMaterialBtn" type="button">حفظ</button><button class="btn secondary" type="button" data-screen="home">رجوع</button></div>
-        </div>
-        <div class="card"><div class="title">آخر إدخالات المواد</div><div id="materialList" class="list"></div></div>
+    <section id="screen-materials" class="screen"><div class="container">
+      <div class="card">
+        <div class="title">إدخال المواد</div>
+        <div class="label">التاريخ</div><div class="input"><input id="mDate" type="date"></div>
+        <div class="label">الزبون</div><div class="input"><input id="mCustomer" list="customersList"></div>
+        <div class="label">المشروع</div><div class="input"><input id="mProject" list="projectsList"></div>
+        <div class="label">المادة</div><div class="input"><input id="mMaterial" list="materialsList"></div>
+        <div class="label">الكمية</div><div class="input"><input id="mQty" type="number"></div>
+        <div class="label">السعر</div><div class="input"><input id="mPrice" type="number"></div>
+        <div class="label">المورد</div><div class="input"><input id="mSupplier" list="suppliersList"></div>
+        <button class="btn" id="saveMaterialBtn">حفظ</button>
       </div>
-    </section>
+      <div class="card"><div class="title">آخر إدخالات المواد</div><div id="materialsBox" class="empty">لا يوجد</div></div>
+    </div></section>
 
-    <section id="screen-projects" class="screen admin-only">
-      <div class="container">
-        <div class="card">
-          <div class="title">إضافة / تعديل مشروع</div>
-          <div class="label">اسم المشروع</div><div class="input"><input id="pName" list="projectsList" placeholder="اسم المشروع"></div>
-          <div class="label">الزبون</div><div class="input"><input id="pCustomer" list="customersList" placeholder="الزبون"></div>
-          <div class="label">قيمة الالتزام</div><div class="input"><input id="pCommitment" type="number" step="0.01" placeholder="قيمة الالتزام"></div>
-          <div class="label">تاريخ البداية</div><div class="input"><input id="pStart" type="date"></div>
-          <div class="label">الحالة</div><div class="input"><select id="pStatus"><option>قيد التنفيذ</option><option>منجز</option><option>موقوف</option></select></div>
-          <div class="toolbar"><button class="btn" id="saveProjectBtn" type="button">حفظ المشروع</button><button class="btn secondary" type="button" data-screen="home">رجوع</button></div>
-        </div>
-        <div class="card">
-          <div class="title">جدول العمال والأجور والسلف</div>
-          <div class="label">العامل</div><div class="input"><input id="wrName" list="workersList" placeholder="اسم العامل"></div>
-          <div class="label">الأجرة المعتمدة</div><div class="input"><input id="wrRate" type="number" step="0.01" placeholder="الأجرة"></div>
-          <div class="label">السلفة الحالية</div><div class="input"><input id="wrAdvance" type="number" step="0.01" placeholder="السلفة"></div>
-          <div class="toolbar"><button class="btn" id="saveWorkerRateBtn" type="button">حفظ بيانات العامل</button><button class="btn secondary" type="button" id="clearWorkerRateBtn">تفريغ</button></div>
-        </div>
-        <div class="card"><div class="title">المشاريع المحفوظة</div><div id="projectList" class="list"></div></div>
-        <div class="card"><div class="title">جدول أجور العمال</div><div id="workerRatesList" class="list"></div></div>
+    <section id="screen-projects" class="screen admin-only"><div class="container">
+      <div class="card">
+        <div class="title">المشاريع</div>
+        <div class="label">اسم المشروع</div><div class="input"><input id="pName"></div>
+        <div class="label">الزبون</div><div class="input"><input id="pCustomer"></div>
+        <div class="label">قيمة الالتزام</div><div class="input"><input id="pCommitment" type="number"></div>
+        <button class="btn" id="saveProjectBtn">حفظ المشروع</button>
       </div>
-    </section>
-
-    <section id="screen-reports" class="screen admin-only">
-      <div class="container">
-        <div class="card">
-          <div class="title">كشف المشروع / كشف حساب الزبون</div>
-          <div class="label">نوع التقرير</div><div class="input"><select id="reportMode"><option value="project">حسب المشروع</option><option value="customer">حسب الزبون</option></select></div>
-          <div class="label">المشروع</div><div class="input"><input id="rProject" list="projectsList" placeholder="اختر المشروع"></div>
-          <div class="label">الزبون</div><div class="input"><input id="rCustomer" list="customersList" placeholder="اختر الزبون"></div>
-          <div class="label">من تاريخ</div><div class="input"><input id="rFrom" type="date"></div>
-          <div class="label">إلى تاريخ</div><div class="input"><input id="rTo" type="date"></div>
-          <div class="toolbar"><button class="btn" id="buildReportBtn" type="button">إنشاء التقرير</button><button class="btn secondary" id="saveReportPdfBtn" type="button">حفظ PDF</button></div>
-        </div>
-        <div class="card"><div class="title">كشف المشروع / كشف الزبون</div><div id="reportResult" class="empty">لا يوجد تقرير بعد</div></div>
-
-        <div class="card">
-          <div class="title">Payroll</div>
-          <div class="label">العامل</div><div class="input"><input id="payrollWorker" list="workersList" placeholder="عامل محدد أو اتركها فارغة"></div>
-          <div class="label">من تاريخ</div><div class="input"><input id="payrollFrom" type="date"></div>
-          <div class="label">إلى تاريخ</div><div class="input"><input id="payrollTo" type="date"></div>
-          <div class="toolbar"><button class="btn" id="buildPayrollBtn" type="button">إنشاء Payroll</button><button class="btn secondary" id="savePayrollPdfBtn" type="button">حفظ PDF</button></div>
-          <div id="payrollResult" class="empty" style="margin-top:10px">لا يوجد Payroll بعد</div>
-        </div>
-
-        <div class="card">
-          <div class="title">Time Sheet العمال</div>
-          <div class="label">العامل</div><div class="input"><input id="timesheetWorker" list="workersList" placeholder="عامل محدد أو اتركها فارغة"></div>
-          <div class="label">من تاريخ</div><div class="input"><input id="timesheetFrom" type="date"></div>
-          <div class="label">إلى تاريخ</div><div class="input"><input id="timesheetTo" type="date"></div>
-          <div class="toolbar"><button class="btn" id="buildTimesheetBtn" type="button">إنشاء Time Sheet</button><button class="btn secondary" id="saveTimesheetPdfBtn" type="button">حفظ PDF</button></div>
-          <div id="timesheetResult" class="empty" style="margin-top:10px">لا يوجد Time Sheet بعد</div>
-        </div>
+      <div class="card">
+        <div class="title">جدول أجور العمال</div>
+        <div class="label">العامل</div><div class="input"><input id="rateName" list="workersList"></div>
+        <div class="label">الأجرة/ساعة</div><div class="input"><input id="rateValue" type="number"></div>
+        <div class="label">السلفة</div><div class="input"><input id="advanceValue" type="number"></div>
+        <button class="btn green" id="saveRateBtn">حفظ الأجر</button>
       </div>
-    </section>
+      <div class="card"><div class="title">قائمة المشاريع</div><div id="projectsBox" class="empty">لا يوجد</div></div>
+      <div class="card"><div class="title">قائمة أجور العمال</div><div id="ratesBox" class="empty">لا يوجد</div></div>
+    </div></section>
+
+    <section id="screen-reports" class="screen admin-only"><div class="container">
+      <div class="card">
+        <div class="title">كشف مشروع / زبون</div>
+        <div class="label">نوع التقرير</div><div class="input"><select id="reportMode"><option value="project">حسب المشروع</option><option value="customer">حسب الزبون</option></select></div>
+        <div class="label">المشروع</div><div class="input"><input id="rProject" list="projectsList"></div>
+        <div class="label">الزبون</div><div class="input"><input id="rCustomer" list="customersList"></div>
+        <div class="label">من</div><div class="input"><input id="rFrom" type="date"></div>
+        <div class="label">إلى</div><div class="input"><input id="rTo" type="date"></div>
+        <div class="toolbar"><button class="btn" id="buildReportBtn">إنشاء</button><button class="btn secondary" id="printReportBtn">PDF</button></div>
+      </div>
+      <div class="card"><div id="reportBox" class="empty">لا يوجد تقرير</div></div>
+    </div></section>
+
+    <section id="screen-payroll" class="screen admin-only"><div class="container">
+      <div class="card">
+        <div class="title">Payroll احترافي</div>
+        <div class="label">العامل</div><div class="input"><input id="payWorker" list="workersList"></div>
+        <div class="label">من</div><div class="input"><input id="payFrom" type="date"></div>
+        <div class="label">إلى</div><div class="input"><input id="payTo" type="date"></div>
+        <div class="toolbar"><button class="btn" id="buildPayrollBtn">إنشاء Payroll</button><button class="btn secondary" id="printPayrollBtn">PDF</button></div>
+      </div>
+      <div class="card"><div id="payrollBox" class="empty">لا يوجد Payroll</div></div>
+      <div class="card">
+        <div class="title">Time Sheet</div>
+        <div class="label">العامل</div><div class="input"><input id="tsWorker" list="workersList"></div>
+        <div class="label">من</div><div class="input"><input id="tsFrom" type="date"></div>
+        <div class="label">إلى</div><div class="input"><input id="tsTo" type="date"></div>
+        <div class="toolbar"><button class="btn" id="buildTsBtn">إنشاء Time Sheet</button><button class="btn secondary" id="printTsBtn">PDF</button></div>
+      </div>
+      <div class="card"><div id="timesheetBox" class="empty">لا يوجد Time Sheet</div></div>
+    </div></section>
+
+    <section id="screen-settings" class="screen admin-only"><div class="container">
+      <div class="card">
+        <div class="title">تغيير الباسورد</div>
+        <div class="label">المستخدم الحالي</div><div class="input"><input id="currentUser" readonly></div>
+        <div class="label">باسورد جديد</div><div class="input"><input id="newPass" type="password"></div>
+        <div class="label">تأكيد</div><div class="input"><input id="confirmPass" type="password"></div>
+        <button class="btn" id="changePassBtn">حفظ الباسورد</button>
+      </div>
+      <div class="card">
+        <div class="title">إضافة مستخدم</div>
+        <div class="label">اسم المستخدم</div><div class="input"><input id="uName"></div>
+        <div class="label">الباسورد</div><div class="input"><input id="uPass" type="password"></div>
+        <div class="label">الصلاحية</div><div class="input"><select id="uRole"><option value="foreman">Foreman</option><option value="admin">Admin</option></select></div>
+        <button class="btn green" id="addUserBtn">إضافة user</button>
+      </div>
+      <div class="card"><div class="title">المستخدمون</div><div id="usersBox" class="empty">لا يوجد</div></div>
+    </div></section>
 
     <datalist id="projectsList"></datalist><datalist id="customersList"></datalist><datalist id="workersList"></datalist><datalist id="materialsList"></datalist><datalist id="suppliersList"></datalist><datalist id="tasksList"></datalist>
   </div>
 </div>
-<script>
-(function(){
-  const KEY="icool_pwa_full_data_v2", GAS_KEY="icool_gas_webapp_url_v1";
-  const USERS=[{username:"admin",password:"1234",role:"admin"},{username:"foreman",password:"1234",role:"foreman"}];
-  const defaultDB={memory:{projects:[],customers:[],workers:[],materials:[],suppliers:[],tasks:[]},entries:{workers:[],materials:[]},projects:[],workerRates:[]};
-  let currentUser=null,lastReportHtml="",lastPayrollHtml="",lastTimesheetHtml="";
-  function clone(o){return JSON.parse(JSON.stringify(o));}
-  function $(id){return document.getElementById(id);}
-  function esc(s){return String(s||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;");}
-  function loadDB(){try{const raw=localStorage.getItem(KEY);if(!raw)return clone(defaultDB);const p=JSON.parse(raw);return {memory:{projects:p.memory?.projects||[],customers:p.memory?.customers||[],workers:p.memory?.workers||[],materials:p.memory?.materials||[],suppliers:p.memory?.suppliers||[],tasks:p.memory?.tasks||[]},entries:{workers:p.entries?.workers||[],materials:p.entries?.materials||[]},projects:p.projects||[],workerRates:p.workerRates||[]};}catch(e){return clone(defaultDB);}}
-  let db=loadDB();
-  function saveDB(){localStorage.setItem(KEY,JSON.stringify(db));}
-  function uniqPush(arr,v){v=String(v||"").trim(); if(v&&!arr.includes(v)) arr.push(v);}
-  function setToday(){const d=new Date().toISOString().slice(0,10); ["wDate","mDate","rFrom","rTo","pStart","payrollFrom","payrollTo","timesheetFrom","timesheetTo"].forEach(id=>{if($(id)&&!$(id).value)$(id).value=d;});}
-  function fillDataList(id,values){ if($(id)) $(id).innerHTML=values.map(v=>`<option value="${esc(v)}"></option>`).join(""); }
-  function getNextDailySeq(type,date){return db.entries[type].filter(x=>x.date===date).length+1;}
-  function updateSeqDisplays(){ if($("wDate")) $("wSeq").value=getNextDailySeq("workers",$("wDate").value||new Date().toISOString().slice(0,10)); if($("mDate")) $("mSeq").value=getNextDailySeq("materials",$("mDate").value||new Date().toISOString().slice(0,10));}
-  function getWorkerRate(name){return db.workerRates.find(x=>x.name===name)||null;}
-  function setMiniStatus(text, cls){ const el=$("syncStatusMini"); el.textContent=text; el.className="pill "+(cls||""); }
-  function updateConnectivity(){ const online=navigator.onLine; $("netStatus").textContent=online?"Online":"Offline"; $("netStatus").className="pill "+(online?"ok":"warn"); }
-  function updateQueue(){ const q=db.entries.workers.filter(x=>!x.synced).length+db.entries.materials.filter(x=>!x.synced).length; $("queueStatus").textContent="Queue: "+q; $("queueStatus").className="pill "+(q?"warn":"ok"); }
-  function renderMemory(){fillDataList("projectsList",db.memory.projects);fillDataList("customersList",db.memory.customers);fillDataList("workersList",db.memory.workers);fillDataList("materialsList",db.memory.materials);fillDataList("suppliersList",db.memory.suppliers);fillDataList("tasksList",db.memory.tasks);}
-  function renderStats(){ $("statProjects").textContent=db.memory.projects.length; $("statWorkers").textContent=db.memory.workers.length; $("statWorkerEntries").textContent=db.entries.workers.length; $("statMaterialEntries").textContent=db.entries.materials.length; }
-  function showScreen(id){ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); $("screen-"+id).classList.add("active"); document.querySelectorAll(".tabs button[data-screen]").forEach(b=>b.classList.toggle("active", b.dataset.screen===id)); updateSeqDisplays(); }
-  document.querySelectorAll(".tabs button[data-screen], [data-screen]").forEach(el=>el.addEventListener("click",()=>{ const t=el.dataset.screen; if(t) showScreen(t); }));
-  document.querySelectorAll(".role-tab").forEach(btn=>btn.addEventListener("click",()=>{ document.querySelectorAll(".role-tab").forEach(b=>b.classList.remove("active")); btn.classList.add("active"); $("loginUser").value=btn.dataset.role; $("loginPass").value="1234"; }));
-  function applyRole(){ const isAdmin=currentUser&&currentUser.role==="admin"; document.querySelectorAll(".admin-only").forEach(el=>el.classList.toggle("hidden",!isAdmin)); $("headSub").textContent=isAdmin?"Admin PWA Full":"Foreman PWA Full"; $("homeIntro").textContent=isAdmin?"الأدمن يرى المشاريع والتقارير والرواتب والتايم شيت والمزامنة.":"الفورمان صلاحياته إدخال العمال والمواد فقط."; $("sessionInfo").textContent=currentUser?(currentUser.username+" / "+currentUser.role):"-"; }
-  $("loginBtn").addEventListener("click",()=>{ const role=document.querySelector(".role-tab.active").dataset.role; const user=USERS.find(u=>u.username===$("loginUser").value.trim()&&u.password===$("loginPass").value.trim()&&u.role===role); if(!user){alert("بيانات الدخول غير صحيحة");return;} currentUser=user; $("screen-login").classList.remove("active"); $("appShell").classList.remove("hidden"); applyRole(); showScreen("home"); });
-  $("logoutBtn").addEventListener("click",()=>{ currentUser=null; $("appShell").classList.add("hidden"); $("screen-login").classList.add("active"); });
-  function renderWorkerList(){ const box=$("workerList"); if(!db.entries.workers.length){ box.innerHTML='<div class="empty">لا توجد إدخالات بعد</div>'; return; } box.innerHTML=db.entries.workers.slice().reverse().slice(0,10).map(x=>`<div class="item"><div class="top"><div><div class="name">#${x.seq} — ${esc(x.worker)} — ${esc(x.project)}</div><div class="small">${esc(x.customer)} | ${x.date} | ${esc(x.task)} ${x.synced?"| Synced":"| Pending"}</div></div><div class="pill2">${x.synced?"Synced":"Pending"}</div></div></div>`).join("");}
-  function renderMaterialList(){ const box=$("materialList"); if(!db.entries.materials.length){ box.innerHTML='<div class="empty">لا توجد إدخالات بعد</div>'; return; } box.innerHTML=db.entries.materials.slice().reverse().slice(0,10).map(x=>`<div class="item"><div class="top"><div><div class="name">#${x.seq} — ${esc(x.material)} — ${esc(x.project)}</div><div class="small">${esc(x.customer)} | ${esc(x.supplier)} | ${x.date} ${x.synced?"| Synced":"| Pending"}</div></div><div class="pill2">${x.synced?"Synced":"Pending"}</div></div></div>`).join("");}
-  function renderProjectList(){ const box=$("projectList"); if(!box) return; if(!db.projects.length){ box.innerHTML='<div class="empty">لا توجد مشاريع بعد</div>'; return; } box.innerHTML=db.projects.slice().reverse().map(x=>`<div class="item"><div class="top"><div><div class="name">${esc(x.name)}</div><div class="small">${esc(x.customer)} | ${esc(x.status)} | ${x.startDate||"-"}</div></div><div class="pill2">$${Number(x.commitment||0).toFixed(2)}</div></div></div>`).join("");}
-  function renderWorkerRatesList(){ const box=$("workerRatesList"); if(!box) return; if(!db.workerRates.length){ box.innerHTML='<div class="empty">لا يوجد جدول أجور بعد</div>'; return; } box.innerHTML=db.workerRates.slice().reverse().map(x=>`<div class="item"><div class="top"><div><div class="name">${esc(x.name)}</div><div class="small">الأجرة: $${Number(x.rate||0).toFixed(2)} | السلفة: $${Number(x.advance||0).toFixed(2)}</div></div><div class="pill2">RATE</div></div></div>`).join("");}
-
-  $("wDate").addEventListener("change", updateSeqDisplays); $("mDate").addEventListener("change", updateSeqDisplays);
-
-  $("saveWorkerBtn").addEventListener("click",()=>{ const rec={id:String(Date.now()),seq:getNextDailySeq("workers",$("wDate").value),date:$("wDate").value,customer:$("wCustomer").value.trim(),project:$("wProject").value.trim(),worker:$("wWorker").value.trim(),start:$("wStart").value||"08:00",end:$("wEnd").value||"17:00",task:$("wTask").value.trim(),note:$("wNote").value.trim(),createdBy:currentUser?.username||"",synced:false}; if(!rec.date||!rec.customer||!rec.project||!rec.worker){alert("املأ الحقول الأساسية");return;} const rr=getWorkerRate(rec.worker); rec.rate=Number(rr?.rate||0); const sp=rec.start.split(":"),ep=rec.end.split(":"); rec.hours=((Number(ep[0])*60+Number(ep[1]))-(Number(sp[0])*60+Number(sp[1])))/60; rec.cost=rec.rate*rec.hours; db.entries.workers.push(rec); uniqPush(db.memory.customers,rec.customer); uniqPush(db.memory.projects,rec.project); uniqPush(db.memory.workers,rec.worker); uniqPush(db.memory.tasks,rec.task); saveDB(); renderMemory(); renderStats(); renderWorkerList(); updateQueue(); setMiniStatus("Pending","warn"); maybeAutoSync_(); const kd=rec.date,kc=rec.customer,kp=rec.project; $("wWorker").value=""; $("wTask").value=""; $("wNote").value=""; $("wDate").value=kd; $("wCustomer").value=kc; $("wProject").value=kp; $("wStart").value="08:00"; $("wEnd").value="17:00"; updateSeqDisplays(); });
-  $("saveMaterialBtn").addEventListener("click",()=>{ const rec={id:String(Date.now()),seq:getNextDailySeq("materials",$("mDate").value),date:$("mDate").value,customer:$("mCustomer").value.trim(),project:$("mProject").value.trim(),material:$("mMaterial").value.trim(),qty:Number($("mQty").value||0),price:Number($("mPrice").value||0),supplier:$("mSupplier").value.trim(),note:$("mNote").value.trim(),createdBy:currentUser?.username||"",synced:false}; if(!rec.date||!rec.customer||!rec.project||!rec.material){alert("املأ الحقول الأساسية");return;} rec.total=rec.qty*rec.price; db.entries.materials.push(rec); uniqPush(db.memory.customers,rec.customer); uniqPush(db.memory.projects,rec.project); uniqPush(db.memory.materials,rec.material); uniqPush(db.memory.suppliers,rec.supplier); saveDB(); renderMemory(); renderStats(); renderMaterialList(); updateQueue(); setMiniStatus("Pending","warn"); maybeAutoSync_(); const kd=rec.date,kc=rec.customer,kp=rec.project; $("mMaterial").value=""; $("mQty").value=""; $("mPrice").value=""; $("mSupplier").value=""; $("mNote").value=""; $("mDate").value=kd; $("mCustomer").value=kc; $("mProject").value=kp; updateSeqDisplays(); });
-  $("saveProjectBtn").addEventListener("click",()=>{ const rec={id:String(Date.now()),name:$("pName").value.trim(),customer:$("pCustomer").value.trim(),commitment:Number($("pCommitment").value||0),startDate:$("pStart").value,status:$("pStatus").value}; if(!rec.name||!rec.customer){alert("املأ اسم المشروع والزبون");return;} const idx=db.projects.findIndex(x=>x.name===rec.name); if(idx>=0) db.projects[idx]=Object.assign({},db.projects[idx],rec); else db.projects.push(rec); uniqPush(db.memory.projects,rec.name); uniqPush(db.memory.customers,rec.customer); saveDB(); renderMemory(); renderProjectList(); maybeAutoSync_(); $("pName").value=""; $("pCustomer").value=""; $("pCommitment").value=""; });
-  $("saveWorkerRateBtn").addEventListener("click",()=>{ const rec={name:$("wrName").value.trim(),rate:Number($("wrRate").value||0),advance:Number($("wrAdvance").value||0)}; if(!rec.name){alert("أدخل اسم العامل");return;} const idx=db.workerRates.findIndex(x=>x.name===rec.name); if(idx>=0) db.workerRates[idx]=Object.assign({},db.workerRates[idx],rec); else db.workerRates.push(rec); uniqPush(db.memory.workers,rec.name); saveDB(); renderMemory(); renderWorkerRatesList(); maybeAutoSync_(); $("wrName").value=""; $("wrRate").value=""; $("wrAdvance").value=""; });
-  $("clearWorkerRateBtn").addEventListener("click",()=>{ $("wrName").value=""; $("wrRate").value=""; $("wrAdvance").value=""; });
-
-  function openPrint(html,title){ const win=window.open("","_blank"); if(!win){alert("افتح من Safari أو Chrome"); return;} win.document.write(`<html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial;padding:20px}table{width:100%;border-collapse:collapse;font-size:12px}th,td{border:1px solid #ddd;padding:8px;text-align:right}th{background:#f6f8fb}.report-box{padding:10px}.report-head{border-bottom:2px solid #ddd;padding-bottom:10px;margin-bottom:12px}.report-head h3{margin:0 0 6px}.report-meta{font-size:12px;color:#555;line-height:1.7}.section-title{font-weight:700;margin:14px 0 10px}</style></head><body>${html}</body></html>`); win.document.close(); win.print(); }
-
-  $("buildReportBtn").addEventListener("click",()=>{ const mode=$("reportMode").value,project=$("rProject").value.trim(),customer=$("rCustomer").value.trim(),from=$("rFrom").value,to=$("rTo").value; const inRange=d=>(!from||d>=from)&&(!to||d<=to); const workers=db.entries.workers.filter(x=>inRange(x.date)&&(mode==="project"?(!project||x.project===project):(!customer||x.customer===customer))); const materials=db.entries.materials.filter(x=>inRange(x.date)&&(mode==="project"?(!project||x.project===project):(!customer||x.customer===customer))); const workerCost=workers.reduce((s,x)=>s+Number(x.cost||0),0), materialCost=materials.reduce((s,x)=>s+Number(x.total||0),0); let projectMeta=null; if(mode==="project"&&project) projectMeta=db.projects.find(x=>x.name===project)||null; const commitment=Number(projectMeta?.commitment||0), totalCost=workerCost+materialCost, profit=commitment?(commitment-totalCost):null; const headTitle=mode==="project"?"كشف المشروع":"كشف حساب الزبون"; const headName=mode==="project"?(project||"الكل"):(customer||"الكل"); const workerRows=workers.length?workers.map(x=>`<tr><td>${x.seq}</td><td>${x.date}</td><td>${esc(x.worker)}</td><td>${esc(x.start)} - ${esc(x.end)}</td><td>${Number(x.hours||0).toFixed(2)}</td><td>$${Number(x.rate||0).toFixed(2)}</td><td>$${Number(x.cost||0).toFixed(2)}</td></tr>`).join(""):`<tr><td colspan="7">لا توجد بيانات عمال</td></tr>`; const materialRows=materials.length?materials.map(x=>`<tr><td>${x.seq}</td><td>${x.date}</td><td>${esc(x.material)}</td><td>${esc(x.supplier)}</td><td>${Number(x.qty||0).toFixed(2)}</td><td>$${Number(x.price||0).toFixed(2)}</td><td>$${Number(x.total||0).toFixed(2)}</td></tr>`).join(""):`<tr><td colspan="7">لا توجد بيانات مواد</td></tr>`; lastReportHtml=`<div class="report-box"><div class="report-head"><h3>${headTitle}</h3><div class="report-meta">${mode==="project"?"المشروع":"الزبون"}: ${esc(headName)}<br>الفترة: ${esc(from||"-")} إلى ${esc(to||"-")}</div></div><div class="section-title">ملخص الكلفة</div><table><tr><th>كلفة العمال</th><th>كلفة المواد</th><th>الإجمالي</th>${mode==="project"?"<th>الالتزام</th><th>الربح</th>":""}</tr><tr><td>$${workerCost.toFixed(2)}</td><td>$${materialCost.toFixed(2)}</td><td>$${totalCost.toFixed(2)}</td>${mode==="project"?`<td>$${commitment.toFixed(2)}</td><td>${profit===null?"-":"$"+profit.toFixed(2)}</td>`:""}</tr></table><div class="section-title" style="margin-top:14px">جدول العمال وكلفتهم</div><table><tr><th>تسلسل</th><th>التاريخ</th><th>العامل</th><th>الوقت</th><th>الساعات</th><th>الأجرة</th><th>الكلفة</th></tr>${workerRows}</table><div class="section-title" style="margin-top:14px">جدول المواد وكلفتها</div><table><tr><th>تسلسل</th><th>التاريخ</th><th>المادة</th><th>المورد</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr>${materialRows}</table></div>`; $("reportResult").innerHTML=lastReportHtml; });
-  $("saveReportPdfBtn").addEventListener("click",()=>{ if(!lastReportHtml){alert("أنشئ التقرير أولاً"); return;} openPrint(lastReportHtml,"Report"); });
-
-  $("buildPayrollBtn").addEventListener("click",()=>{ const worker=$("payrollWorker").value.trim(),from=$("payrollFrom").value,to=$("payrollTo").value; const inRange=d=>(!from||d>=from)&&(!to||d<=to); const data=db.entries.workers.filter(x=>inRange(x.date)&&(!worker||x.worker===worker)); if(!data.length){ lastPayrollHtml=""; $("payrollResult").innerHTML="لا توجد بيانات Payroll"; return; } const grouped={}; data.forEach(x=>{ const rateRow=getWorkerRate(x.worker); if(!grouped[x.worker]) grouped[x.worker]={hours:0,cost:0,days:0,advance:Number(rateRow?.advance||0)}; grouped[x.worker].hours+=Number(x.hours||0); grouped[x.worker].cost+=Number(x.cost||0); grouped[x.worker].days+=1; }); const rows=Object.entries(grouped).map(([name,v])=>`<tr><td>${esc(name)}</td><td>${v.days}</td><td>${v.hours.toFixed(2)}</td><td>$${v.cost.toFixed(2)}</td><td>$${Number(v.advance||0).toFixed(2)}</td><td>$${(v.cost-Number(v.advance||0)).toFixed(2)}</td></tr>`).join(""); lastPayrollHtml=`<div class="report-box"><div class="report-head"><h3>Payroll</h3><div class="report-meta">الفترة: ${esc(from||"-")} إلى ${esc(to||"-")}<br>العامل: ${esc(worker||"الكل")}</div></div><table><tr><th>العامل</th><th>عدد الإدخالات</th><th>الساعات</th><th>الإجمالي</th><th>السلفة</th><th>الصافي</th></tr>${rows}</table></div>`; $("payrollResult").innerHTML=lastPayrollHtml; });
-  $("savePayrollPdfBtn").addEventListener("click",()=>{ if(!lastPayrollHtml){alert("أنشئ Payroll أولاً"); return;} openPrint(lastPayrollHtml,"Payroll"); });
-
-  $("buildTimesheetBtn").addEventListener("click",()=>{ const worker=$("timesheetWorker").value.trim(),from=$("timesheetFrom").value,to=$("timesheetTo").value; const inRange=d=>(!from||d>=from)&&(!to||d<=to); const data=db.entries.workers.filter(x=>inRange(x.date)&&(!worker||x.worker===worker)).sort((a,b)=>a.date.localeCompare(b.date)||a.worker.localeCompare(b.worker)); if(!data.length){ lastTimesheetHtml=""; $("timesheetResult").innerHTML="لا توجد بيانات Time Sheet"; return; } const byWorker={}; data.forEach(x=>{ if(!byWorker[x.worker]) byWorker[x.worker]=[]; byWorker[x.worker].push(x); }); let blocks=""; Object.entries(byWorker).forEach(([name,rows])=>{ const dates=[...new Set(rows.map(r=>r.date))]; const minDate=from||dates[0], maxDate=to||dates[dates.length-1]; const map={}; rows.forEach(r=>map[r.date]=r); let tr=""; let cursor=new Date(minDate), end=new Date(maxDate); while(cursor<=end){ const d=cursor.toISOString().slice(0,10); const r=map[d]; tr += `<tr><td>${d}</td><td>${r?esc(r.start):"-"}</td><td>${r?esc(r.end):"-"}</td><td>${r?Number(r.hours||0).toFixed(2):"0.00"}</td><td>${r?esc(r.project):"غياب"}</td><td>${r?esc(r.task):"غياب"}</td></tr>`; cursor.setDate(cursor.getDate()+1);} blocks += `<div class="section-title" style="margin-top:14px">${esc(name)}</div><table><tr><th>التاريخ</th><th>الدخول</th><th>الخروج</th><th>الساعات</th><th>المشروع</th><th>الوصف / الحالة</th></tr>${tr}</table>`; }); lastTimesheetHtml=`<div class="report-box"><div class="report-head"><h3>Time Sheet العمال</h3><div class="report-meta">الفترة: ${esc(from||"-")} إلى ${esc(to||"-")}<br>العامل: ${esc(worker||"الكل")}</div></div>${blocks}</div>`; $("timesheetResult").innerHTML=lastTimesheetHtml; });
-  $("saveTimesheetPdfBtn").addEventListener("click",()=>{ if(!lastTimesheetHtml){alert("أنشئ Time Sheet أولاً"); return;} openPrint(lastTimesheetHtml,"Timesheet"); });
-
-  async function syncNow_(){ const url=$("gasUrl").value.trim()||localStorage.getItem(GAS_KEY)||""; if(!url){ $("syncStatus").textContent="ضع رابط Web App أولاً"; setMiniStatus("No URL","bad"); return false; } try{ const res=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"pushAll",db:db})}); const txt=await res.text(); $("syncStatus").textContent="تمت المزامنة: "+txt; setMiniStatus("Synced","ok"); db.entries.workers.forEach(x=>x.synced=true); db.entries.materials.forEach(x=>x.synced=true); saveDB(); renderWorkerList(); renderMaterialList(); updateQueue(); return true; }catch(e){ $("syncStatus").textContent="فشل الربط: "+e.message; setMiniStatus("Failed","bad"); return false; } }
-  async function maybeAutoSync_(){ if(!navigator.onLine) return; const url=$("gasUrl").value.trim()||localStorage.getItem(GAS_KEY)||""; if(!url) return; await syncNow_(); }
-  $("saveGasUrlBtn").addEventListener("click",()=>{ localStorage.setItem(GAS_KEY,$("gasUrl").value.trim()); $("syncStatus").textContent="تم حفظ رابط الربط"; setMiniStatus("URL Saved","ok"); });
-  $("syncNowBtn").addEventListener("click",syncNow_);
-  $("pullNowBtn").addEventListener("click", async ()=>{ const url=$("gasUrl").value.trim()||localStorage.getItem(GAS_KEY)||""; if(!url){ $("syncStatus").textContent="ضع رابط Web App أولاً"; return; } try{ const res=await fetch(url+"?action=pullAll"); const data=await res.json(); if(data&&data.db){ db=data.db; saveDB(); renderMemory(); renderStats(); renderWorkerList(); renderMaterialList(); renderProjectList(); renderWorkerRatesList(); updateSeqDisplays(); updateQueue(); $("syncStatus").textContent="تم سحب البيانات من Google"; setMiniStatus("Pulled","ok"); } else { $("syncStatus").textContent="لم يتم العثور على بيانات"; } }catch(e){ $("syncStatus").textContent="فشل السحب: "+e.message; setMiniStatus("Pull failed","bad"); } });
-  window.addEventListener("online",()=>{ updateConnectivity(); maybeAutoSync_(); }); window.addEventListener("offline",updateConnectivity);
-  if("serviceWorker" in navigator){ navigator.serviceWorker.register("./sw.js").then(()=>{$("swStatus").textContent="PWA Ready"; $("swStatus").className="pill ok";}).catch(()=>{$("swStatus").textContent="SW Failed"; $("swStatus").className="pill bad";}); } else { $("swStatus").textContent="No SW"; $("swStatus").className="pill bad"; }
-  $("gasUrl").value=localStorage.getItem(GAS_KEY)||""; updateConnectivity(); setToday(); renderMemory(); renderStats(); renderWorkerList(); renderMaterialList(); renderProjectList(); renderWorkerRatesList(); updateSeqDisplays(); updateQueue();
-})();
-</script>
+<script src="./app.js"></script>
 </body>
 </html>

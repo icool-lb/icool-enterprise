@@ -1,6 +1,6 @@
 {
-  "name": "iCOOL Enterprise Full",
-  "short_name": "iCOOL Full",
+  "name": "iCOOL ERP Final",
+  "short_name": "iCOOL",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4f6f9",
