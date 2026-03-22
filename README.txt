@@ -1,20 +1,16 @@
-iCOOL ERP - Import once + Append only
 
-What this version does:
-- Import your old data from Google Sheet ONCE
-- After that, Sync sends NEW records only
-- It does NOT wipe sheets
-- It does NOT need Pull after initial import
-- Worker/material forms keep date + customer + project between saves
-- Daily sequence numbering for workers and materials
+iCOOL ERP Final
 
-Main workflow:
-1. Paste your old Excel data into Google Sheets
-2. Deploy Apps Script backend
-3. In the app, click Import Initial Data once
-4. Then use the app normally
-5. Click Sync New Records Only when you want to append new records
+Included now:
+- dropdown selects for customer/project/worker/material/supplier/task
+- plus buttons to add new options quickly
+- project -> customer autofill
+- same-day edit for workers/materials
+- image upload field in materials (camera/gallery)
+- WhatsApp buttons for reports/payroll/timesheet
+- append-only sync
+- import anytime from Google Sheet
 
-Default logins:
-- admin / 1234
-- foreman / 1234
+Important note:
+- Image upload requires setting DRIVE_FOLDER_ID inside apps_script_backend.gs
+- Because this version is intended to finish the app today, the image upload is implemented, but Google Drive permissions must be configured by you in Apps Script before first use.

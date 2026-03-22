@@ -1,5 +1,5 @@
 {
-  "name": "iCOOL ERP Import Append",
+  "name": "iCOOL ERP Final",
   "short_name": "iCOOL ERP",
   "start_url": "./index.html",
   "display": "standalone",
@@ -7,14 +7,9 @@
   "theme_color": "#1173d8",
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icon-512.png",
+      "src": "./logo-icool.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
