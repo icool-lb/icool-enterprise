@@ -1,66 +1,26 @@
 /**
- * iCOOL ERP backend for Google Apps Script
+ * iCOOL ERP - Import once + Append only
  * Deploy as Web App:
  * - Execute as: Me
  * - Access: Anyone with the link
  *
- * Smart sync:
- * - GET ?action=getVersion
- * - GET ?action=pullIfChanged&version=#
- * - GET ?action=pullAll
- * - POST { action: "pushAll", db: {...} }
+ * GET  ?action=importAll
+ * POST { action:"appendNewRecords", projects, workerRates, memory, entries:{workers,materials} }
  */
 
 function doGet(e) {
   var action = (e && e.parameter && e.parameter.action) || "";
-
-  if (action === "getVersion") {
-    return jsonOutput_({
-      ok: true,
-      version: getMetaVersion_(),
-      last_update: getMetaValue_("last_update")
-    });
+  if (action === "importAll") {
+    return jsonOutput_({ ok:true, db: importAll_() });
   }
-
-  if (action === "pullIfChanged") {
-    var clientVersion = Number((e.parameter && e.parameter.version) || 0);
-    var serverVersion = getMetaVersion_();
-    if (clientVersion >= serverVersion) {
-      return jsonOutput_({
-        ok: true,
-        changed: false,
-        version: serverVersion,
-        last_update: getMetaValue_("last_update")
-      });
-    }
-    return jsonOutput_({
-      ok: true,
-      changed: true,
-      version: serverVersion,
-      last_update: getMetaValue_("last_update"),
-      db: pullDatabase_()
-    });
-  }
-
-  if (action === "pullAll") {
-    return jsonOutput_({
-      ok: true,
-      changed: true,
-      version: getMetaVersion_(),
-      last_update: getMetaValue_("last_update"),
-      db: pullDatabase_()
-    });
-  }
-
-  return jsonOutput_({ ok: true, message: "iCOOL backend ready" });
+  return jsonOutput_({ ok:true, message:"backend ready" });
 }
 
 function doPost(e) {
   try {
     var body = JSON.parse(e.postData.contents || "{}");
-    if ((body.action || "") === "pushAll") {
-      pushDatabase_(body.db || {});
-      bumpMetaVersion_();
+    if ((body.action || "") === "appendNewRecords") {
+      appendNewRecords_(body);
       return ContentService.createTextOutput("OK");
     }
     return ContentService.createTextOutput("UNKNOWN_ACTION");
@@ -70,159 +30,148 @@ function doPost(e) {
 }
 
 function jsonOutput_(obj) {
-  return ContentService
-    .createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function ss_(){ return SpreadsheetApp.getActiveSpreadsheet(); }
-
 function sheet_(name){
   var sh = ss_().getSheetByName(name);
-  if(!sh) sh = ss_().insertSheet(name);
+  if (!sh) sh = ss_().insertSheet(name);
   return sh;
 }
 
-function ensureMeta_() {
-  var sh = sheet_("Meta");
-  if (sh.getLastRow() === 0) {
-    sh.getRange(1, 1, 3, 2).setValues([
-      ["key", "value"],
-      ["version", 1],
-      ["last_update", new Date().toISOString()]
-    ]);
-  } else {
-    var headers = sh.getRange(1,1,1,2).getValues()[0];
-    if (headers[0] !== "key" || headers[1] !== "value") {
-      sh.clearContents();
-      sh.getRange(1, 1, 3, 2).setValues([
-        ["key", "value"],
-        ["version", 1],
-        ["last_update", new Date().toISOString()]
-      ]);
-    }
-  }
-  return sh;
-}
-
-function getMetaMap_() {
-  var sh = ensureMeta_();
-  var values = sh.getDataRange().getValues();
-  var map = {};
-  for (var i = 1; i < values.length; i++) {
-    var k = values[i][0];
-    var v = values[i][1];
-    if (k) map[String(k)] = v;
-  }
-  return map;
-}
-
-function getMetaVersion_() {
-  var m = getMetaMap_();
-  return Number(m.version || 1);
-}
-
-function getMetaValue_(key) {
-  var m = getMetaMap_();
-  return m[key] || "";
-}
-
-function setMetaValue_(key, value) {
-  var sh = ensureMeta_();
-  var values = sh.getDataRange().getValues();
-  var found = false;
-  for (var i = 1; i < values.length; i++) {
-    if (String(values[i][0]) === String(key)) {
-      sh.getRange(i + 1, 2).setValue(value);
-      found = true;
-      break;
-    }
-  }
-  if (!found) {
-    sh.appendRow([key, value]);
-  }
-}
-
-function bumpMetaVersion_() {
-  var current = getMetaVersion_();
-  setMetaValue_("version", current + 1);
-  setMetaValue_("last_update", new Date().toISOString());
-}
-
-function replaceSheetData_(name, headers, rows) {
+function ensureHeaders_(name, headers){
   var sh = sheet_(name);
-  sh.clearContents();
-  var values = [headers].concat(rows || []);
-  sh.getRange(1, 1, values.length, headers.length).setValues(values);
+  if (sh.getLastRow() === 0) sh.getRange(1,1,1,headers.length).setValues([headers]);
+  return sh;
 }
 
-function readRows_(name) {
+function readRows_(name){
   var sh = sheet_(name);
   var values = sh.getDataRange().getValues();
   if (values.length < 2) return [];
   var headers = values[0];
-  return values.slice(1).filter(function(r){ return r.join("") !== ""; }).map(function(row) {
+  return values.slice(1).filter(function(r){ return r.join("") !== ""; }).map(function(row){
     var obj = {};
-    headers.forEach(function(h, i) { obj[h] = row[i]; });
+    headers.forEach(function(h,i){ obj[h]=row[i]; });
     return obj;
   });
 }
 
-function readSingleColumn_(name) {
+function readSingle_(name){
   return readRows_(name).map(function(x){ return x.value; }).filter(String);
 }
 
-function pushDatabase_(db) {
-  db = db || {};
-  var memory = db.memory || {};
-  var entries = db.entries || {};
-  var projects = db.projects || [];
-  var workerRates = db.workerRates || [];
+function importAll_(){
+  ensureHeaders_("Projects", ["name","customer","commitment"]);
+  ensureHeaders_("WorkerRates", ["name","rate","advance"]);
+  ensureHeaders_("WorkerEntries", ["id","seq","date","customer","project","worker","start","end","task","hours","rate","cost","synced"]);
+  ensureHeaders_("MaterialEntries", ["id","seq","date","customer","project","material","qty","price","supplier","total","synced"]);
+  ensureHeaders_("Memory_Projects", ["value"]);
+  ensureHeaders_("Memory_Customers", ["value"]);
+  ensureHeaders_("Memory_Workers", ["value"]);
+  ensureHeaders_("Memory_Materials", ["value"]);
+  ensureHeaders_("Memory_Suppliers", ["value"]);
+  ensureHeaders_("Memory_Tasks", ["value"]);
 
-  replaceSheetData_("Projects", ["name","customer","commitment"],
-    projects.map(function(x){ return [x.name||"", x.customer||"", x.commitment||0]; })
-  );
+  var workers = readRows_("WorkerEntries").map(function(x, i){
+    if (!x.id) x.id = "W-IMP-" + (i+1);
+    if (x.synced === "" || x.synced == null) x.synced = true;
+    return x;
+  });
+  var materials = readRows_("MaterialEntries").map(function(x, i){
+    if (!x.id) x.id = "M-IMP-" + (i+1);
+    if (x.synced === "" || x.synced == null) x.synced = true;
+    return x;
+  });
 
-  replaceSheetData_("WorkerRates", ["name","rate","advance"],
-    workerRates.map(function(x){ return [x.name||"", x.rate||0, x.advance||0]; })
-  );
-
-  replaceSheetData_("WorkerEntries", ["date","customer","project","worker","start","end","task","hours","rate","cost","synced"],
-    (entries.workers || []).map(function(x){
-      return [x.date||"", x.customer||"", x.project||"", x.worker||"", x.start||"", x.end||"", x.task||"", x.hours||0, x.rate||0, x.cost||0, x.synced===true];
-    })
-  );
-
-  replaceSheetData_("MaterialEntries", ["date","customer","project","material","qty","price","supplier","total","synced"],
-    (entries.materials || []).map(function(x){
-      return [x.date||"", x.customer||"", x.project||"", x.material||"", x.qty||0, x.price||0, x.supplier||"", x.total||0, x.synced===true];
-    })
-  );
-
-  replaceSheetData_("Memory_Projects", ["value"], (memory.projects || []).map(function(x){ return [x]; }));
-  replaceSheetData_("Memory_Customers", ["value"], (memory.customers || []).map(function(x){ return [x]; }));
-  replaceSheetData_("Memory_Workers", ["value"], (memory.workers || []).map(function(x){ return [x]; }));
-  replaceSheetData_("Memory_Materials", ["value"], (memory.materials || []).map(function(x){ return [x]; }));
-  replaceSheetData_("Memory_Suppliers", ["value"], (memory.suppliers || []).map(function(x){ return [x]; }));
-  replaceSheetData_("Memory_Tasks", ["value"], (memory.tasks || []).map(function(x){ return [x]; }));
-}
-
-function pullDatabase_() {
-  ensureMeta_();
   return {
     memory: {
-      projects: readSingleColumn_("Memory_Projects"),
-      customers: readSingleColumn_("Memory_Customers"),
-      workers: readSingleColumn_("Memory_Workers"),
-      materials: readSingleColumn_("Memory_Materials"),
-      suppliers: readSingleColumn_("Memory_Suppliers"),
-      tasks: readSingleColumn_("Memory_Tasks")
+      projects: readSingle_("Memory_Projects"),
+      customers: readSingle_("Memory_Customers"),
+      workers: readSingle_("Memory_Workers"),
+      materials: readSingle_("Memory_Materials"),
+      suppliers: readSingle_("Memory_Suppliers"),
+      tasks: readSingle_("Memory_Tasks")
     },
-    entries: {
-      workers: readRows_("WorkerEntries"),
-      materials: readRows_("MaterialEntries")
-    },
+    entries: { workers: workers, materials: materials },
     projects: readRows_("Projects"),
     workerRates: readRows_("WorkerRates")
   };
+}
+
+function upsertListSheet_(name, headers, rows, keyField){
+  var sh = ensureHeaders_(name, headers);
+  var existing = readRows_(name);
+  var map = {};
+  existing.forEach(function(x){ map[String(x[keyField]||"")] = x; });
+  rows.forEach(function(r){ map[String(r[keyField]||"")] = r; });
+  var merged = Object.keys(map).filter(function(k){ return k !== ""; }).map(function(k){ return map[k]; });
+  sh.clearContents();
+  sh.getRange(1,1,1,headers.length).setValues([headers]);
+  if (merged.length) {
+    sh.getRange(2,1,merged.length,headers.length).setValues(merged.map(function(r){
+      return headers.map(function(h){ return r[h] || ""; });
+    }));
+  }
+}
+
+function appendUniqueEntries_(name, headers, rows, idField){
+  var sh = ensureHeaders_(name, headers);
+  var existing = readRows_(name);
+  var ids = {};
+  existing.forEach(function(x){ ids[String(x[idField]||"")] = true; });
+  var toAppend = rows.filter(function(r){
+    var id = String(r[idField] || "");
+    return id && !ids[id];
+  });
+  if (toAppend.length) {
+    sh.getRange(sh.getLastRow()+1,1,toAppend.length,headers.length).setValues(
+      toAppend.map(function(r){ return headers.map(function(h){ return r[h] || ""; }); })
+    );
+  }
+}
+
+function appendUniqueValues_(name, values){
+  var sh = ensureHeaders_(name, ["value"]);
+  var existing = readSingle_(name);
+  var set = {};
+  existing.forEach(function(v){ set[String(v)] = true; });
+  var toAppend = values.filter(function(v){
+    var s = String(v || "").trim();
+    return s && !set[s];
+  }).map(function(v){ return [v]; });
+  if (toAppend.length) {
+    sh.getRange(sh.getLastRow()+1,1,toAppend.length,1).setValues(toAppend);
+  }
+}
+
+function appendNewRecords_(body){
+  body = body || {};
+  var projects = body.projects || [];
+  var workerRates = body.workerRates || [];
+  var memory = body.memory || {};
+  var entries = body.entries || {};
+
+  upsertListSheet_("Projects", ["name","customer","commitment"], projects, "name");
+  upsertListSheet_("WorkerRates", ["name","rate","advance"], workerRates, "name");
+
+  appendUniqueEntries_("WorkerEntries",
+    ["id","seq","date","customer","project","worker","start","end","task","hours","rate","cost","synced"],
+    entries.workers || [],
+    "id"
+  );
+
+  appendUniqueEntries_("MaterialEntries",
+    ["id","seq","date","customer","project","material","qty","price","supplier","total","synced"],
+    entries.materials || [],
+    "id"
+  );
+
+  appendUniqueValues_("Memory_Projects", memory.projects || []);
+  appendUniqueValues_("Memory_Customers", memory.customers || []);
+  appendUniqueValues_("Memory_Workers", memory.workers || []);
+  appendUniqueValues_("Memory_Materials", memory.materials || []);
+  appendUniqueValues_("Memory_Suppliers", memory.suppliers || []);
+  appendUniqueValues_("Memory_Tasks", memory.tasks || []);
 }

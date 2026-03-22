@@ -3,45 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>iCOOL ERP Final</title>
+  <title>iCOOL ERP Import + Append</title>
   <meta name="theme-color" content="#1173d8" />
   <link rel="manifest" href="./manifest.webmanifest">
-  <style>
-    :root{--bg:#f4f6f9;--line:#e2e8f0;--text:#1f2d3d;--muted:#6b7a8c;--blue:#1173d8;--blue2:#0b5ab0;--soft:#fafcfe;--red:#dc2626;--green:#16a34a;--orange:#d97706}
-    *{box-sizing:border-box} body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Tahoma,Arial;background:var(--bg);color:var(--text)}
-    .app{max-width:430px;margin:auto;min-height:100vh;padding-bottom:24px}.header{background:#fff;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
-    .brand{font-size:22px;font-weight:900;color:var(--blue)} .sub{font-size:12px;color:var(--muted);margin-top:4px}
-    .statusbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.pill{font-size:11px;padding:5px 8px;border-radius:999px;background:#eef5ff;color:var(--blue);border:1px solid #d6e6f7}.ok{background:#ecfdf3!important;color:#0f7a37!important}.warn{background:#fff7ed!important;color:#b45309!important}.bad{background:#fff1f2!important;color:#b91c1c!important}
-    .tabs-wrap{position:sticky;top:86px;z-index:19;background:var(--bg);padding:10px 16px 8px}.tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;background:#fff;padding:8px;border:1px solid var(--line);border-radius:14px}
-    .tabs button{padding:9px 2px;border-radius:10px;font-size:10px;border:none;background:none;color:#667;font-weight:700}.tabs button.active{background:#f4f9ff;color:var(--blue)}
-    .container{padding:16px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}.title{font-size:16px;font-weight:800;margin-bottom:10px}
-    .label{font-size:12px;color:var(--muted);font-weight:800;margin:8px 2px 6px}.input{min-height:48px;border:1px solid #dfe7ef;border-radius:10px;margin-bottom:10px;padding:10px 12px;display:flex;align-items:center;background:var(--soft)}
-    .input input,.input select,.input textarea{border:none;outline:none;width:100%;background:transparent;font-size:14px;font-family:inherit;color:var(--text)} .input textarea{min-height:72px;resize:vertical}
-    .btn{height:46px;border:none;border-radius:10px;background:var(--blue);color:#fff;font-weight:800;width:100%;cursor:pointer}.secondary{background:#eef5ff!important;color:var(--blue)!important;border:1px solid #cfe0f5}.green{background:#ecfdf3!important;color:#0f7a37!important;border:1px solid #bbf7d0}.danger{background:#fff1f2!important;color:#b91c1c!important;border:1px solid #fecdd3}
-    .toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.toolbar3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-    .screen{display:none}.screen.active{display:block}.hidden{display:none!important}.empty{padding:16px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.item{border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px;background:#fff}.name{font-size:14px;font-weight:800}.small{font-size:12px;color:var(--muted);margin-top:4px}
-    table{width:100%;border-collapse:collapse;font-size:12px}th,td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:right;vertical-align:top}th{background:#f8fbfe}.hero{background:linear-gradient(135deg,#1173d8,#0b5ab0);color:#fff;border-radius:16px;padding:16px;margin-bottom:12px}.hero h2{margin:0 0 8px;font-size:20px}.hero p{margin:0;font-size:13px;line-height:1.6}
-  </style>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <div class="brand">iCOOL ERP Final</div>
-    <div class="sub">Payroll + TimeSheet + Settings + Better Pull</div>
+    <div class="brand">iCOOL ERP</div>
+    <div class="sub">Import once from Google Sheet + Append only sync</div>
     <div class="statusbar">
       <span class="pill" id="netStatus">Offline</span>
+      <span class="pill" id="syncMini">Idle</span>
       <span class="pill" id="queueStatus">Queue: 0</span>
-      <span class="pill" id="swStatus">PWA</span>
-      <span class="pill" id="syncMini">No sync</span>
     </div>
   </div>
 
   <section id="loginScreen" class="screen active">
-    <div class="container">
-      <div class="hero"><h2>النسخة النهائية</h2><p>تشمل الرواتب، التايم شيت، الإعدادات، إضافة مستخدم، تغيير باسورد، وأوفلاين مع مزامنة.</p></div>
+    <div class="container narrow">
+      <div class="hero">
+        <h2>نسخة الاستيراد الأولي</h2>
+        <p>استيراد مرة واحدة من Google Sheet ثم إرسال السجلات الجديدة فقط بدون مسح أي بيانات من الشيت.</p>
+      </div>
       <div class="card">
-        <div class="label">اسم المستخدم</div><div class="input"><input id="loginUser" value="admin"></div>
-        <div class="label">الباسورد</div><div class="input"><input id="loginPass" type="password" value="1234"></div>
+        <div class="label">اسم المستخدم</div>
+        <div class="input"><input id="loginUser" value="admin"></div>
+        <div class="label">كلمة المرور</div>
+        <div class="input"><input id="loginPass" type="password" value="1234"></div>
         <button class="btn" id="loginBtn">دخول</button>
       </div>
     </div>
@@ -62,121 +51,229 @@
 
     <section id="screen-home" class="screen active">
       <div class="container">
-        <div class="hero"><h2>لوحة التحكم</h2><p id="sessionInfo">-</p></div>
+        <div class="hero">
+          <h2>لوحة التحكم</h2>
+          <p id="sessionInfo">-</p>
+        </div>
+
+        <div class="grid">
+          <div class="stat"><div class="k">Projects</div><b id="statProjects">0</b></div>
+          <div class="stat"><div class="k">Workers</div><b id="statWorkers">0</b></div>
+          <div class="stat"><div class="k">Worker Entries</div><b id="statWorkerEntries">0</b></div>
+          <div class="stat"><div class="k">Material Entries</div><b id="statMaterialEntries">0</b></div>
+        </div>
+
         <div class="card admin-only">
+          <div class="title">Google Sheet</div>
           <div class="label">رابط Google Apps Script Web App</div>
           <div class="input"><input id="gasUrl" placeholder="ضع الرابط هنا"></div>
           <div class="toolbar3">
-            <button class="btn" id="saveUrlBtn">حفظ</button>
-            <button class="btn green" id="syncBtn">Sync</button>
-            <button class="btn secondary" id="pullBtn">Pull</button>
+            <button class="btn" id="saveUrlBtn">حفظ الرابط</button>
+            <button class="btn green" id="importBtn">Import Initial Data</button>
+            <button class="btn secondary" id="appendBtn">Sync New Records Only</button>
           </div>
           <div class="small" id="syncStatus">جاهز</div>
         </div>
-        <div class="card"><button class="btn danger" id="logoutBtn">تسجيل خروج</button></div>
+
+        <div class="card">
+          <div class="title">ملاحظات</div>
+          <div class="small">
+            1) استعمل Import مرة واحدة فقط بعد لصق بياناتك القديمة في Google Sheet.<br>
+            2) بعد ذلك استعمل Sync New Records Only فقط.<br>
+            3) هذا الزر لا يمسح الشيت ولا يستبدل كل البيانات.
+          </div>
+        </div>
+
+        <div class="card">
+          <button class="btn danger" id="logoutBtn">تسجيل خروج</button>
+        </div>
       </div>
     </section>
 
-    <section id="screen-workers" class="screen"><div class="container">
-      <div class="card">
-        <div class="title">إدخال العمال</div>
-        <div class="label">التاريخ</div><div class="input"><input id="wDate" type="date"></div>
-        <div class="label">الزبون</div><div class="input"><input id="wCustomer" list="customersList"></div>
-        <div class="label">المشروع</div><div class="input"><input id="wProject" list="projectsList"></div>
-        <div class="label">العامل</div><div class="input"><input id="wWorker" list="workersList"></div>
-        <div class="label">بدء</div><div class="input"><input id="wStart" type="time" value="08:00"></div>
-        <div class="label">انتهاء</div><div class="input"><input id="wEnd" type="time" value="17:00"></div>
-        <div class="label">وصف العمل</div><div class="input"><input id="wTask" list="tasksList"></div>
-        <button class="btn" id="saveWorkerBtn">حفظ</button>
+    <section id="screen-workers" class="screen">
+      <div class="container">
+        <div class="card">
+          <div class="title">إدخال العمال</div>
+          <div class="label">الرقم التسلسلي اليومي</div>
+          <div class="input"><input id="wSeq" readonly></div>
+          <div class="label">التاريخ</div>
+          <div class="input"><input id="wDate" type="date"></div>
+          <div class="label">الزبون</div>
+          <div class="input"><input id="wCustomer" list="customersList"></div>
+          <div class="label">المشروع</div>
+          <div class="input"><input id="wProject" list="projectsList"></div>
+          <div class="label">العامل</div>
+          <div class="input"><input id="wWorker" list="workersList"></div>
+          <div class="label">بدء</div>
+          <div class="input"><input id="wStart" type="time" value="08:00"></div>
+          <div class="label">انتهاء</div>
+          <div class="input"><input id="wEnd" type="time" value="17:00"></div>
+          <div class="label">وصف العمل</div>
+          <div class="input"><input id="wTask" list="tasksList"></div>
+          <div class="toolbar">
+            <button class="btn" id="saveWorkerBtn">حفظ</button>
+            <button class="btn secondary" data-screen="home">رجوع</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="title">آخر إدخالات العمال</div>
+          <div id="workersBox" class="empty">لا يوجد</div>
+        </div>
       </div>
-      <div class="card"><div class="title">آخر إدخالات العمال</div><div id="workersBox" class="empty">لا يوجد</div></div>
-    </div></section>
+    </section>
 
-    <section id="screen-materials" class="screen"><div class="container">
-      <div class="card">
-        <div class="title">إدخال المواد</div>
-        <div class="label">التاريخ</div><div class="input"><input id="mDate" type="date"></div>
-        <div class="label">الزبون</div><div class="input"><input id="mCustomer" list="customersList"></div>
-        <div class="label">المشروع</div><div class="input"><input id="mProject" list="projectsList"></div>
-        <div class="label">المادة</div><div class="input"><input id="mMaterial" list="materialsList"></div>
-        <div class="label">الكمية</div><div class="input"><input id="mQty" type="number"></div>
-        <div class="label">السعر</div><div class="input"><input id="mPrice" type="number"></div>
-        <div class="label">المورد</div><div class="input"><input id="mSupplier" list="suppliersList"></div>
-        <button class="btn" id="saveMaterialBtn">حفظ</button>
+    <section id="screen-materials" class="screen">
+      <div class="container">
+        <div class="card">
+          <div class="title">إدخال المواد</div>
+          <div class="label">الرقم التسلسلي اليومي</div>
+          <div class="input"><input id="mSeq" readonly></div>
+          <div class="label">التاريخ</div>
+          <div class="input"><input id="mDate" type="date"></div>
+          <div class="label">الزبون</div>
+          <div class="input"><input id="mCustomer" list="customersList"></div>
+          <div class="label">المشروع</div>
+          <div class="input"><input id="mProject" list="projectsList"></div>
+          <div class="label">المادة</div>
+          <div class="input"><input id="mMaterial" list="materialsList"></div>
+          <div class="label">الكمية</div>
+          <div class="input"><input id="mQty" type="number" step="0.01"></div>
+          <div class="label">السعر</div>
+          <div class="input"><input id="mPrice" type="number" step="0.01"></div>
+          <div class="label">المورد</div>
+          <div class="input"><input id="mSupplier" list="suppliersList"></div>
+          <div class="toolbar">
+            <button class="btn" id="saveMaterialBtn">حفظ</button>
+            <button class="btn secondary" data-screen="home">رجوع</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="title">آخر إدخالات المواد</div>
+          <div id="materialsBox" class="empty">لا يوجد</div>
+        </div>
       </div>
-      <div class="card"><div class="title">آخر إدخالات المواد</div><div id="materialsBox" class="empty">لا يوجد</div></div>
-    </div></section>
+    </section>
 
-    <section id="screen-projects" class="screen admin-only"><div class="container">
-      <div class="card">
-        <div class="title">المشاريع</div>
-        <div class="label">اسم المشروع</div><div class="input"><input id="pName"></div>
-        <div class="label">الزبون</div><div class="input"><input id="pCustomer"></div>
-        <div class="label">قيمة الالتزام</div><div class="input"><input id="pCommitment" type="number"></div>
-        <button class="btn" id="saveProjectBtn">حفظ المشروع</button>
-      </div>
-      <div class="card">
-        <div class="title">جدول أجور العمال</div>
-        <div class="label">العامل</div><div class="input"><input id="rateName" list="workersList"></div>
-        <div class="label">الأجرة/ساعة</div><div class="input"><input id="rateValue" type="number"></div>
-        <div class="label">السلفة</div><div class="input"><input id="advanceValue" type="number"></div>
-        <button class="btn green" id="saveRateBtn">حفظ الأجر</button>
-      </div>
-      <div class="card"><div class="title">قائمة المشاريع</div><div id="projectsBox" class="empty">لا يوجد</div></div>
-      <div class="card"><div class="title">قائمة أجور العمال</div><div id="ratesBox" class="empty">لا يوجد</div></div>
-    </div></section>
+    <section id="screen-projects" class="screen admin-only">
+      <div class="container">
+        <div class="card">
+          <div class="title">المشاريع</div>
+          <div class="label">اسم المشروع</div>
+          <div class="input"><input id="pName"></div>
+          <div class="label">الزبون</div>
+          <div class="input"><input id="pCustomer"></div>
+          <div class="label">قيمة الالتزام</div>
+          <div class="input"><input id="pCommitment" type="number" step="0.01"></div>
+          <button class="btn" id="saveProjectBtn">حفظ المشروع</button>
+        </div>
 
-    <section id="screen-reports" class="screen admin-only"><div class="container">
-      <div class="card">
-        <div class="title">كشف مشروع / زبون</div>
-        <div class="label">نوع التقرير</div><div class="input"><select id="reportMode"><option value="project">حسب المشروع</option><option value="customer">حسب الزبون</option></select></div>
-        <div class="label">المشروع</div><div class="input"><input id="rProject" list="projectsList"></div>
-        <div class="label">الزبون</div><div class="input"><input id="rCustomer" list="customersList"></div>
-        <div class="label">من</div><div class="input"><input id="rFrom" type="date"></div>
-        <div class="label">إلى</div><div class="input"><input id="rTo" type="date"></div>
-        <div class="toolbar"><button class="btn" id="buildReportBtn">إنشاء</button><button class="btn secondary" id="printReportBtn">PDF</button></div>
-      </div>
-      <div class="card"><div id="reportBox" class="empty">لا يوجد تقرير</div></div>
-    </div></section>
+        <div class="card">
+          <div class="title">جدول أجور العمال</div>
+          <div class="label">العامل</div>
+          <div class="input"><input id="rName" list="workersList"></div>
+          <div class="label">الأجرة/ساعة</div>
+          <div class="input"><input id="rRate" type="number" step="0.01"></div>
+          <div class="label">السلفة</div>
+          <div class="input"><input id="rAdvance" type="number" step="0.01"></div>
+          <button class="btn green" id="saveRateBtn">حفظ الأجر</button>
+        </div>
 
-    <section id="screen-payroll" class="screen admin-only"><div class="container">
-      <div class="card">
-        <div class="title">Payroll احترافي</div>
-        <div class="label">العامل</div><div class="input"><input id="payWorker" list="workersList"></div>
-        <div class="label">من</div><div class="input"><input id="payFrom" type="date"></div>
-        <div class="label">إلى</div><div class="input"><input id="payTo" type="date"></div>
-        <div class="toolbar"><button class="btn" id="buildPayrollBtn">إنشاء Payroll</button><button class="btn secondary" id="printPayrollBtn">PDF</button></div>
+        <div class="card"><div class="title">قائمة المشاريع</div><div id="projectsBox" class="empty">لا يوجد</div></div>
+        <div class="card"><div class="title">قائمة أجور العمال</div><div id="ratesBox" class="empty">لا يوجد</div></div>
       </div>
-      <div class="card"><div id="payrollBox" class="empty">لا يوجد Payroll</div></div>
-      <div class="card">
-        <div class="title">Time Sheet</div>
-        <div class="label">العامل</div><div class="input"><input id="tsWorker" list="workersList"></div>
-        <div class="label">من</div><div class="input"><input id="tsFrom" type="date"></div>
-        <div class="label">إلى</div><div class="input"><input id="tsTo" type="date"></div>
-        <div class="toolbar"><button class="btn" id="buildTsBtn">إنشاء Time Sheet</button><button class="btn secondary" id="printTsBtn">PDF</button></div>
-      </div>
-      <div class="card"><div id="timesheetBox" class="empty">لا يوجد Time Sheet</div></div>
-    </div></section>
+    </section>
 
-    <section id="screen-settings" class="screen admin-only"><div class="container">
-      <div class="card">
-        <div class="title">تغيير الباسورد</div>
-        <div class="label">المستخدم الحالي</div><div class="input"><input id="currentUser" readonly></div>
-        <div class="label">باسورد جديد</div><div class="input"><input id="newPass" type="password"></div>
-        <div class="label">تأكيد</div><div class="input"><input id="confirmPass" type="password"></div>
-        <button class="btn" id="changePassBtn">حفظ الباسورد</button>
+    <section id="screen-reports" class="screen admin-only">
+      <div class="container">
+        <div class="card">
+          <div class="title">كشف مشروع / زبون</div>
+          <div class="label">نوع التقرير</div>
+          <div class="input"><select id="reportMode"><option value="project">حسب المشروع</option><option value="customer">حسب الزبون</option></select></div>
+          <div class="label">المشروع</div>
+          <div class="input"><input id="rProject" list="projectsList"></div>
+          <div class="label">الزبون</div>
+          <div class="input"><input id="rCustomer" list="customersList"></div>
+          <div class="label">من</div>
+          <div class="input"><input id="rFrom" type="date"></div>
+          <div class="label">إلى</div>
+          <div class="input"><input id="rTo" type="date"></div>
+          <div class="toolbar">
+            <button class="btn" id="buildReportBtn">إنشاء</button>
+            <button class="btn secondary" id="printReportBtn">PDF</button>
+          </div>
+        </div>
+        <div class="card"><div id="reportBox" class="empty">لا يوجد تقرير</div></div>
       </div>
-      <div class="card">
-        <div class="title">إضافة مستخدم</div>
-        <div class="label">اسم المستخدم</div><div class="input"><input id="uName"></div>
-        <div class="label">الباسورد</div><div class="input"><input id="uPass" type="password"></div>
-        <div class="label">الصلاحية</div><div class="input"><select id="uRole"><option value="foreman">Foreman</option><option value="admin">Admin</option></select></div>
-        <button class="btn green" id="addUserBtn">إضافة user</button>
-      </div>
-      <div class="card"><div class="title">المستخدمون</div><div id="usersBox" class="empty">لا يوجد</div></div>
-    </div></section>
+    </section>
 
-    <datalist id="projectsList"></datalist><datalist id="customersList"></datalist><datalist id="workersList"></datalist><datalist id="materialsList"></datalist><datalist id="suppliersList"></datalist><datalist id="tasksList"></datalist>
+    <section id="screen-payroll" class="screen admin-only">
+      <div class="container">
+        <div class="card">
+          <div class="title">Payroll احترافي</div>
+          <div class="label">العامل</div>
+          <div class="input"><input id="payWorker" list="workersList"></div>
+          <div class="label">من</div>
+          <div class="input"><input id="payFrom" type="date"></div>
+          <div class="label">إلى</div>
+          <div class="input"><input id="payTo" type="date"></div>
+          <div class="toolbar">
+            <button class="btn" id="buildPayrollBtn">إنشاء Payroll</button>
+            <button class="btn secondary" id="printPayrollBtn">PDF</button>
+          </div>
+        </div>
+        <div class="card"><div id="payrollBox" class="empty">لا يوجد Payroll</div></div>
+
+        <div class="card">
+          <div class="title">Time Sheet</div>
+          <div class="label">العامل</div>
+          <div class="input"><input id="tsWorker" list="workersList"></div>
+          <div class="label">من</div>
+          <div class="input"><input id="tsFrom" type="date"></div>
+          <div class="label">إلى</div>
+          <div class="input"><input id="tsTo" type="date"></div>
+          <div class="toolbar">
+            <button class="btn" id="buildTsBtn">إنشاء Time Sheet</button>
+            <button class="btn secondary" id="printTsBtn">PDF</button>
+          </div>
+        </div>
+        <div class="card"><div id="timesheetBox" class="empty">لا يوجد Time Sheet</div></div>
+      </div>
+    </section>
+
+    <section id="screen-settings" class="screen admin-only">
+      <div class="container">
+        <div class="card">
+          <div class="title">تغيير الباسورد</div>
+          <div class="label">المستخدم الحالي</div>
+          <div class="input"><input id="currentUser" readonly></div>
+          <div class="label">باسورد جديد</div>
+          <div class="input"><input id="newPass" type="password"></div>
+          <div class="label">تأكيد</div>
+          <div class="input"><input id="confirmPass" type="password"></div>
+          <button class="btn" id="changePassBtn">حفظ الباسورد</button>
+        </div>
+
+        <div class="card">
+          <div class="title">إضافة مستخدم</div>
+          <div class="label">اسم المستخدم</div>
+          <div class="input"><input id="uName"></div>
+          <div class="label">الباسورد</div>
+          <div class="input"><input id="uPass" type="password"></div>
+          <div class="label">الصلاحية</div>
+          <div class="input"><select id="uRole"><option value="foreman">Foreman</option><option value="admin">Admin</option></select></div>
+          <button class="btn green" id="addUserBtn">إضافة user</button>
+        </div>
+
+        <div class="card"><div class="title">المستخدمون</div><div id="usersBox" class="empty">لا يوجد</div></div>
+      </div>
+    </section>
+
+    <datalist id="projectsList"></datalist>
+    <datalist id="customersList"></datalist>
+    <datalist id="workersList"></datalist>
+    <datalist id="materialsList"></datalist>
+    <datalist id="suppliersList"></datalist>
+    <datalist id="tasksList"></datalist>
   </div>
 </div>
 <script src="./app.js"></script>

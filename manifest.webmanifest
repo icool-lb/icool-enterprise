@@ -1,6 +1,6 @@
 {
-  "name": "iCOOL ERP Final",
-  "short_name": "iCOOL",
+  "name": "iCOOL ERP Import Append",
+  "short_name": "iCOOL ERP",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#f4f6f9",
